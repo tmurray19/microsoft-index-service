@@ -1,0 +1,105 @@
+{
+    "project_id": "2312",
+    "video_id": "cf40989adb",
+    "requested": "07-Oct-2019 (10:36:39)",
+    "done": 0,
+    "status": 0,
+    "initial_connection_details": {
+        "partition": null,
+        "description": null,
+        "privacyMode": "Private",
+        "state": "Processing",
+        "accountId": "d1c32f1b-2a26-4b44-b6a3-c96e709d0648",
+        "id": "cf40989adb",
+        "name": "2312_edited",
+        "userName": "Taidgh Murray",
+        "created": "2019-10-07T09:36:34.6709263+00:00",
+        "isOwned": true,
+        "isEditable": true,
+        "isBase": true,
+        "durationInSeconds": 0,
+        "summarizedInsights": {
+            "name": "2312_edited",
+            "id": "cf40989adb",
+            "privacyMode": "Private",
+            "duration": {
+                "time": "0:00:00",
+                "seconds": 0
+            },
+            "thumbnailVideoId": "cf40989adb",
+            "thumbnailId": "00000000-0000-0000-0000-000000000000",
+            "faces": [],
+            "keywords": [],
+            "sentiments": [],
+            "emotions": [],
+            "audioEffects": [],
+            "labels": [],
+            "framePatterns": [],
+            "brands": [],
+            "namedLocations": [],
+            "namedPeople": [],
+            "statistics": {
+                "correspondenceCount": 0,
+                "speakerTalkToListenRatio": {},
+                "speakerLongestMonolog": {},
+                "speakerNumberOfFragments": {},
+                "speakerWordCount": {}
+            },
+            "topics": []
+        },
+        "videos": [
+            {
+                "accountId": "d1c32f1b-2a26-4b44-b6a3-c96e709d0648",
+                "id": "cf40989adb",
+                "state": "Processing",
+                "moderationState": "OK",
+                "reviewState": "None",
+                "privacyMode": "Private",
+                "processingProgress": "10%",
+                "failureCode": "None",
+                "failureMessage": null,
+                "externalId": null,
+                "externalUrl": null,
+                "metadata": null,
+                "insights": {
+                    "version": "1.0.0.0",
+                    "sourceLanguage": "en-US",
+                    "sourceLanguages": [
+                        "en-US"
+                    ],
+                    "language": "en-US",
+                    "languages": [
+                        "en-US"
+                    ]
+                },
+                "thumbnailId": "00000000-0000-0000-0000-000000000000",
+                "detectSourceLanguage": false,
+                "languageAutoDetectMode": "None",
+                "sourceLanguage": "en-US",
+                "sourceLanguages": [
+                    "en-US"
+                ],
+                "language": "en-US",
+                "languages": [
+                    "en-US"
+                ],
+                "indexingPreset": "DefaultWithNoiseReduction",
+                "linguisticModelId": "00000000-0000-0000-0000-000000000000",
+                "personModelId": "00000000-0000-0000-0000-000000000000",
+                "isAdult": false,
+                "publishedUrl": null,
+                "publishedProxyUrl": null,
+                "viewToken": null
+            }
+        ],
+        "videosRanges": [
+            {
+                "videoId": "cf40989adb",
+                "range": {
+                    "start": "0:00:00",
+                    "end": "0:00:00"
+                }
+            }
+        ]
+    }
+}
