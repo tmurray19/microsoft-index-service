@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type=text/javascript src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
+  <script type=text/javascript>$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+</head>
+
+<div id="vid_player">{{player | safe}}</div>
+
+<div id="cc_editor">{{captions | safe}}</div>
+
+<script>
+    $(document).ready( function() {
+        $('#next').click(function() {
+           $.ajax("{{ url_for('show_player', proj_id=proj_id) }}").done(function (reply) {
+              $('#vid_player').html(reply);
+           });
+        });
+    });
+</script>
+
+<input type="button" id="next" value="Reload" />
