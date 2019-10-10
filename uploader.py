@@ -183,7 +183,7 @@ def get_insights(proj_id):
         token=access_token
     )
 
-    cc_widget = '<iframe width="580" height="780" src="{}" frameborder="0" allowfullscreen></iframe>'.format(cc_src)
+    cc_widget = '<iframe width="580" height="780" src="{}" frameborder="1" allowfullscreen></iframe>'.format(cc_src)
 
 
     vid_src= "https://www.videoindexer.ai/embed/player/{uid}/{vid_id}/?accessToken={token}".format(
@@ -192,7 +192,7 @@ def get_insights(proj_id):
         token=access_token
     )
 
-    vid_widget = '<iframe width="583" height="480" src="{}" frameborder="0" allowfullscreen></iframe>'.format(vid_src)
+    vid_widget = '<iframe width="800" height="600" src="{}" frameborder="1" allowfullscreen></iframe>'.format(vid_src)
 
     print(cc_widget)
     print(vid_widget)

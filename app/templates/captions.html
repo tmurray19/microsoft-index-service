@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script type=text/javascript src="{{ url_for('static', filename='jquery-3.4.1.min.js') }}"></script>
-  <script type=text/javascript>$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+  <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+  <script type=text/javascript>$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>  
+  <script type=text/javascript src="{{ url_for('static', filename='css/editor.css') }}"></script>
 </head>
 
-<div id="vid_player">{{player | safe}}</div>
-
-<div id="cc_editor">{{captions | safe}}</div>
+<div id="container">
+  <div style="float:left">
+    <div id="vid_player" class="flex-item" style="margin-left: 20px">{{player | safe}}</div>
+    <div style="margin-left: 20px">I'll put video data in here later like title and stuff</div>
+    <input type="button" id="next" value="Reload" style="float: bottom; margin-left: 20px"/>
+  </div>
+  <div id="cc_editor" class="flex-item" style="float:right; margin-left: 40px">{{captions | safe}}</div>
+</div>
 
 <script>
     $(document).ready( function() {
@@ -19,4 +25,3 @@
     });
 </script>
 
-<input type="button" id="next" value="Reload" />
