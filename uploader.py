@@ -3,6 +3,8 @@ from config import Config
 import logging, os, json
 from datetime import datetime
 import http.client, urllib.request, urllib.parse, urllib.error, base64
+from video_status import get_access_token
+import requests
 
 # This is the production version
 
@@ -130,4 +132,105 @@ def upload_project_to_index(proj_id=None):
             logging.error("An error has occured")
             logging.exception("")
         
-get_video_status("2312")
+#get_video_status("2312")
+
+def get_insights(proj_id):
+    """
+    We need to query the server using the API
+        we need to ask for the access token, (write it to the json file just in case)
+        we need to query the API, ask for the widget
+        return the widget somewhere
+    """
+    logging.debug("Querying index service for CC widget for {}".format(proj_id))
+    # Get access token
+    logging.debug("Get index ID")
+    video_id = None
+    try:        
+        # Get location of project
+        proj_loc = os.path.join(Config.BASE_DIR, Config.VIDS_LOCATION, proj_id)
+
+        logging.debug("Querying CC status of {}".format(proj_id))
+        print("Querying CC status of {}".format(proj_id))
+
+        # Opens JSON data, prints last known status to logging file
+        with open(os.path.join(proj_loc, proj_id+"_index_status.json")) as status_json_file:
+            # Last known json data 
+            json_data = json.load(status_json_file)
+            
+            # Now, you need to query this video id
+            #video_id = json_data['index_video_id']
+            video_id = json_data['video_id']
+    except:
+        logging.error("Error occured during get_widget for '{}'".format(proj_id))
+        return -1
+
+    access_token = get_access_token(video_id)
+
+    logging.debug("Access token recieved for '{}'".format(proj_id))
+    logging.debug(access_token)
+
+    json_data['accessToken'] = access_token
+
+    logging.debug("Writing access token to json")
+    with open(os.path.join(proj_loc, proj_id+"_index_status.json"), 'w') as status_json_file:
+        json.dump(json_data, status_json_file)
+    
+    logging.debug("We are now querying for the widgets")
+
+    cc_src="https://www.videoindexer.ai/embed/insights/{uid}/{vid_id}/?accessToken={token}".format(
+        uid=Config.INDEX_ACCOUNT_ID,
+        vid_id=video_id,
+        token=access_token
+    )
+
+    cc_widget = '<iframe width="580" height="780" src="{}" frameborder="0" allowfullscreen></iframe>'.format(cc_src)
+
+
+    vid_src= "https://www.videoindexer.ai/embed/player/{uid}/{vid_id}/?accessToken={token}".format(
+        uid=Config.INDEX_ACCOUNT_ID,
+        vid_id=video_id,
+        token=access_token
+    )
+
+    vid_widget = '<iframe width="583" height="480" src="{}" frameborder="0" allowfullscreen></iframe>'.format(vid_src)
+
+    print(cc_widget)
+    print(vid_widget)
+    return cc_widget, vid_widget
+
+
+get_insights("2312")
+
+
+def api_query_widget(video_id, access_token):    
+    #&allowEdit=true&accessToken={token}'
+    headers = {
+        'Ocp-Apim-Subscription-Key': Config.INDEX_SUBSCRIPTION_KEY,
+    }
+
+    params = {
+        'allowEdit': 'true',
+        'accessToken': access_token
+    }
+
+    cc_widget = requests.get(
+        'https://api.videoindexer.ai/{loc}/Accounts/{accId}/Videos/{vidId}/InsightsWidget'.format(
+            loc=Config.INDEX_ACCOUNT_LOCATION,
+            accId=Config.INDEX_ACCOUNT_ID,
+            vidId=video_id
+        ),
+        params=params,
+        headers=headers
+    )
+
+    print(cc_widget.status_code)
+
+    print(cc_widget.text)
+    breakup = cc_widget.text.split("</head>")
+    print(breakup)
+    print()
+    print(breakup[0])
+    print()
+    print(breakup[1])
+
+
