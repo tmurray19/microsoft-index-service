@@ -10,6 +10,7 @@ def show_index(proj_id):
     """
     Render catption vide editor
     """
+    proj_id = str(proj_id)
 
     caption, vid = uploader.get_insights(proj_id)
     return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
