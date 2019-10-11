@@ -180,8 +180,7 @@ def get_insights(proj_id):
             json_data = json.load(status_json_file)
             
             # Now, you need to query this video id
-            #video_id = json_data['index_video_id']
-            video_id = json_data['video_id']
+            video_id = json_data['index_video_id']
     except:
         logging.error("Error occured during get_widget for '{}'".format(proj_id))
         return -1
