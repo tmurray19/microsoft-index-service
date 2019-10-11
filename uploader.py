@@ -2,6 +2,7 @@ from video_indexer import VideoIndexer
 from config import Config
 import logging, os, json
 from datetime import datetime
+import time
 import http.client, urllib.request, urllib.parse, urllib.error, base64
 from video_status import get_access_token
 import requests
@@ -32,10 +33,10 @@ def get_video_status(proj_id):
             logging.debug("Last known status of video")
             logging.debug(json_data)
             logging.debug("Last known state of '{}': ".format(proj_id))
-            logging.debug(json_data['initial_connection_details']['state'])
+            logging.debug(json_data['indexer_info']['state'])
             
             # Now, you need to query this video id
-            video_id = json_data['video_id']
+            video_id = json_data['index_video_id']
 
             # TODO: Testing purpoise
 
@@ -67,11 +68,12 @@ def get_video_status(proj_id):
         return 99
 
 
-def upload_project_to_index(proj_id=None):
+def upload_project_to_index(proj_id=None, send_end=None):
     """
     Uploads video at proj_id location to the Azure Indexing service to create 
 
     """
+    success = -1
     logging.debug("Flagging upload session for project id '{}'".format(proj_id))
     proj_loc = os.path.join(Config.BASE_DIR, Config.VIDS_LOCATION, proj_id)
 
@@ -83,10 +85,19 @@ def upload_project_to_index(proj_id=None):
     # Check if the file has been uploaded first to avoid any bugs
     if os.path.exists(os.path.join(proj_loc, proj_id + "_index_status.json")):
         try:
-            get_video_status(proj_id)
+            current_status = get_video_status(proj_id)
+            if current_status == 'Processed' or current_status == 'Processing':
+                logging.debug("Video has already been uploaded")
+                success=1
+                if send_end is not None:
+                    send_end.send(success)
+                return success
         except:
             logging.error("Error occured in upload_project_to_index for {}".format(proj_id))
             logging.exception('')
+            if send_end is not None:
+                send_end.send(success)
+            return success
     else:            
         # Attempt to upload video
         try:
@@ -94,6 +105,7 @@ def upload_project_to_index(proj_id=None):
             print("Creating upload instance for {}".format(proj_id))
 
             logging.debug("Uploading video '{}'".format(proj_id))
+            upload_begin = time.time()      
 
             video_id = vi.upload_to_video_indexer(
                 input_filename=video_file,
@@ -101,6 +113,8 @@ def upload_project_to_index(proj_id=None):
                 video_language='English'
             )
 
+            logging.debug("Video uploaded to Index Service in {}s".format(time.time() - upload_begin))
+            
             logging.debug("Video id for project '{}' is '{}'".format(proj_id, video_id))
             print(video_id)
 
@@ -118,7 +132,7 @@ def upload_project_to_index(proj_id=None):
                 "project_id": proj_id,
                 "index_video_id": video_id,
                 "status": 0,
-                "requested": datetime.datetime.now(),
+                "requested": datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
                 "otherInfo": None,
                 "indexer_info": info,
                 "done": 0
@@ -127,12 +141,20 @@ def upload_project_to_index(proj_id=None):
             print("Writing video status to json file")
             with open(os.path.join(proj_loc, proj_id + "_index_status.json"), 'w') as outfile:
                 json.dump(index_json_data, outfile)
+            
+            success = 1
+
+            if send_end is not None:
+                send_end.send(success)
+            return success
         
         except:
             logging.error("An error has occured")
             logging.exception("")
-        
-#get_video_status("2312")
+            if send_end is not None:
+                send_end.send(success)
+            return success
+
 
 def get_insights(proj_id):
     """
@@ -199,9 +221,6 @@ def get_insights(proj_id):
     return cc_widget, vid_widget
 
 
-get_insights("2312")
-
-
 def api_query_widget(video_id, access_token):    
     #&allowEdit=true&accessToken={token}'
     headers = {
@@ -234,3 +253,26 @@ def api_query_widget(video_id, access_token):
     print(breakup[1])
 
 
+def create_queue_instance(proj_id):
+    logging.debug("Creating json file for watcher to read for '{}'".format(proj_id))
+
+
+    try:
+        index_watcher_loc = os.path.join(Config.BASE_DIR, Config.INDEX_WATCHER)
+
+        json_data = {
+            "project_id": proj_id,
+            "seen": False,
+            "requested": datetime.now().strftime("%d-%b-%Y (%H:%M:%S)"),
+            "otherInfo": None,
+            "firstRequested": True
+        }
+
+        with open(os.path.join(index_watcher_loc, proj_id+"_index_queue_status.json"), 'w') as write_file:
+            json.dump(json_data, write_file)
+
+        return 1
+    except:
+        logging.error("Error occured during upload initialisation")
+        logging.exception("")
+        return -1

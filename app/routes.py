@@ -30,9 +30,19 @@ def show_player(proj_id):
 
 api = Api(app)
 
-@api.route('/chunk/<int:proj_id>')
-class RenderChunk(Resource):
+@api.route('/initialise_upload/<int:proj_id>')
+class InitialiseIndex(Resource):
     def get(self, proj_id):
-        pass
+        return uploader.create_queue_instance(proj_id)
+
+@api.route('/index_upload/<int:proj_id>')
+class UploadIndex(Resource):
+    def get(self, proj_id):
+        return uploader.upload_project_to_index(proj_id)
+
+@api.route('/index_status/<int:proj_id>')
+class GetIndex(Resource):
+    def get(self, proj_id):
+        return uploader.get_video_status(proj_id)
 
 
