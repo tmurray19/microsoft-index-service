@@ -26,17 +26,17 @@ def show_player(proj_id):
 
 api = Api(app)
 
-@api.route('/initialise_upload/<int:proj_id>')
+@api.route('/initialise_upload/<string:proj_id>')
 class InitialiseIndex(Resource):
     def get(self, proj_id):
         return uploader.create_queue_instance(proj_id)
 
-@api.route('/index_upload/<int:proj_id>')
+@api.route('/index_upload/<string:proj_id>')
 class UploadIndex(Resource):
     def get(self, proj_id):
         return uploader.upload_project_to_index(proj_id)
 
-@api.route('/index_status/<int:proj_id>')
+@api.route('/index_status/<string:proj_id>')
 class GetIndex(Resource):
     def get(self, proj_id):
         return uploader.get_video_status(proj_id)
