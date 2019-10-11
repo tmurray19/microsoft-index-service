@@ -18,7 +18,7 @@ class Config(object):
     FLASK_LOGS = os.environ.get('FLASK_LOG') or 'renderFlask'
     INDEX_WATCHER = os.environ.get('INDEX_WATCHER') or 'indexQueue'
     INDEX_WATCHER_LOGS = os.environ.get('INDEX_WATCHER_LOGS') or 'indexUploader'
-    INDEX_FLASk_LOGS = os.environ.get('INDEX_FLASk_LOGS') or 'indexFlask'
+    INDEX_FLASK_LOGS = os.environ.get('INDEX_FLASK_LOGS') or 'indexFlask'
 
     # Defining storage name and key
     STORAGE_ACCOUNT_NAME = os.environ.get('STORAGE_ACCOUNT_NAME') or 'csae48d5df47deax41bcxbaa'

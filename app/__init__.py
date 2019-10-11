@@ -6,7 +6,7 @@ from datetime import datetime
 app = Flask(__name__)
 # Config file
 app.config.from_object(Config)
-log_name = os.path.join(app.config['BASE_DIR'], app.config['LOGS_LOCATION'], app.config['INDEX_FLASk_LOGS'], datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_index_flask_instance.log")
+log_name = os.path.join(app.config['BASE_DIR'], app.config['LOGS_LOCATION'], app.config['INDEX_FLASK_LOGS'], datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_index_flask_instance.log")
 logging.basicConfig(
     level=logging.DEBUG,        
     format='%(asctime)s %(levelname)-8s %(message)s',
