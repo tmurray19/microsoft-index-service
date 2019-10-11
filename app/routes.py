@@ -5,10 +5,6 @@ import logging, os
 import uploader
 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 @app.route('/captions/<string:proj_id>')
 def show_index(proj_id):
     """
