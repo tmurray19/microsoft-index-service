@@ -183,6 +183,7 @@ def get_insights(proj_id):
             video_id = json_data['index_video_id']
     except:
         logging.error("Error occured during get_widget for '{}'".format(proj_id))
+        logging.exception('')
         return -1
 
     access_token = get_access_token(video_id)
