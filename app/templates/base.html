@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script type=text/javascript src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+        <script type=text/javascript>$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>  
+        <script type=text/javascript src="{{ url_for('static', filename='css/editor.css') }}"></script>      
+        <title>VideoSherpa Indexing Services</title>
+    </head>
+    <body>
+        <div class='container'>
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>
