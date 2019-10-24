@@ -2,15 +2,11 @@
 
 {% block content %}
 
-<div class="container">
-  <div style="float:left">
-    <div id="vid_player" class="container float-left" style="margin-left: 20px">{{player | safe}}</div>
-    <div>I'll put video data in here later like title and stuff</div>
+    <div id="vid_player" class="float-left">{{player | safe}}</div>
+    <div id="cc_editor" class="float-right">{{captions | safe}}</div>
+    <div class="float-right">I'll put video data in here later like title and stuff</div>
     <input type="button" id="next" value="Reload" />
-  </div>
-  <div id="cc_editor" class="container float-right">{{captions | safe}}</div>
-</div>
-
+    
 <script>
     $(document).ready( function() {
         $('#next').click(function() {

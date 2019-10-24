@@ -1,6 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Chunk render viewer</h1>
 
 <form action = "{{ url_for('show_index') }}" method="post">
     <input type="text" name="proj_id">Project ID</input>
     <input type="submit" value="Request CC">
 </form>
+
+{% endblock %}
