@@ -5,16 +5,18 @@ import logging, os
 import uploader
 
 
-@app.route('/captions/<string:proj_id>')
+@app.route('/captions/<int:proj_id>')
 def show_index(proj_id):
     """
     Render catption vide editor
     """
     proj_id = str(proj_id)
 
-    caption, vid = uploader.get_insights(proj_id)
-    return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
-
+    try:
+        caption, vid = uploader.get_insights(proj_id)
+        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
+    except:
+        return render_template('error.html')
 @app.route('/player/<string:proj_id>')
 def show_player(proj_id):
     """
