@@ -205,7 +205,7 @@ def get_insights(proj_id):
         token=access_token
     )
 
-    cc_widget = '<iframe width="580" height="780" src="{}" frameborder="1" allowfullscreen></iframe>'.format(cc_src)
+    cc_widget = '<iframe class="embed-responsive-item" src="{}" frameborder="1" allowfullscreen></iframe>'.format(cc_src)
 
 
     vid_src= "https://www.videoindexer.ai/embed/player/{uid}/{vid_id}/?accessToken={token}".format(
@@ -214,11 +214,81 @@ def get_insights(proj_id):
         token=access_token
     )
 
-    vid_widget = '<iframe width="800" height="600" src="{}" frameborder="1" allowfullscreen></iframe>'.format(vid_src)
+    vid_widget = '<iframe class="embed-responsive-item" src="{}" frameborder="1" allowfullscreen></iframe>'.format(vid_src)
 
     print(cc_widget)
     print(vid_widget)
     return cc_widget, vid_widget
+
+
+def get_srt(proj_id):
+    """
+    Queries the server to return the srt file
+    """
+    logging.debug("Querying index service for SRT for {}".format(proj_id))
+    # Get access token
+    logging.debug("Get index ID")
+    video_id = None
+    # Gets video id if the clip already exists
+    try:        
+        # Get location of project
+        proj_loc = os.path.join(Config.BASE_DIR, Config.VIDS_LOCATION, proj_id)
+
+        logging.debug("Querying CC status of {}".format(proj_id))
+        print("Querying CC status of {}".format(proj_id))
+
+        # Opens JSON data, prints last known status to logging file
+        with open(os.path.join(proj_loc, proj_id+"_index_status.json")) as status_json_file:
+            # Last known json data 
+            json_data = json.load(status_json_file)
+            
+            # Now, you need to query this video id
+            video_id = json_data['index_video_id']
+    except:
+        logging.error("Error occured during get_widget for '{}'".format(proj_id))
+        logging.error("File may not exist on index server")
+        logging.exception('')
+        return -1
+
+    # Gets a new access token for the video
+    access_token = get_access_token(video_id)
+
+    logging.debug("Access token recieved for '{}'".format(proj_id))
+    logging.debug(access_token)
+
+    # Writes it to the
+    json_data['accessToken'] = access_token
+
+    logging.debug("Writing access token to json")
+    with open(os.path.join(proj_loc, proj_id+"_index_status.json"), 'w') as status_json_file:
+        json.dump(json_data, status_json_file)
+    
+    logging.debug("We are now querying for the widgets")
+
+    headers = {
+        'Ocp-Apim-Subscription-Key': Config.INDEX_SUBSCRIPTION_KEY,
+    }
+
+    params = {
+        'allowEdit': 'true',
+        'accessToken': access_token
+    }
+
+    srt = requests.get(
+        'https://api.videoindexer.ai/{loc}/Accounts/{accId}/Videos/{vidId}/Captions?format=Srt&language=en-US'.format(
+            loc=Config.INDEX_ACCOUNT_LOCATION,
+            accId=Config.INDEX_ACCOUNT_ID,
+            vidId=video_id
+        ),
+        params=params,
+        headers=headers
+    )
+
+    return srt
+
+
+
+
 
 
 def api_query_widget(video_id, access_token):    
