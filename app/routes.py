@@ -13,40 +13,57 @@ def show_index(proj_id):
     proj_id = str(proj_id)
 
     try:
-        caption, vid, srt = uploader.get_insights(proj_id)
-        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption, srt=srt)
+        caption, vid, _srt = uploader.get_insights(proj_id)
+        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
     except:
+        logging.exception('')
         return render_template('error.html')
         
+# For refreshing captions
 @app.route('/player/<string:proj_id>')
 def show_player(proj_id):
     """
     Render catption vide editor
     """
 
-    _caption, vid = uploader.get_insights(proj_id)
+    _caption, vid, _srt = uploader.get_insights(proj_id)
     return vid
 
 @app.route('/download/captions/<string:proj_id>')
 def download_captions(proj_id):
-    captions = uploader.get_srt(proj_id)
-    return send_file(captions)
+    # This gets captions from indexer
+    captions, _text = uploader.get_srt(proj_id)
+    try:
+        return send_file(captions, as_attachment=True, mimetype='text/srt', attachment_filename="{}_cc.srt".format(proj_id))
+    except:
+        logging.error("Error occurred during download_caption")
+        logging.exception('')
+
 
 api = Api(app)
-
+# Creates JSON
 @api.route('/initialise_upload/<string:proj_id>')
 class InitialiseIndex(Resource):
     def get(self, proj_id):
         return uploader.create_queue_instance(proj_id)
 
+# Uploads video to indexer service
 @api.route('/index_upload/<string:proj_id>')
 class UploadIndex(Resource):
     def get(self, proj_id):
         return uploader.upload_project_to_index(proj_id)
 
+# Gets status of video
 @api.route('/index_status/<string:proj_id>')
 class GetIndex(Resource):
     def get(self, proj_id):
         return uploader.get_video_status(proj_id)
+
+# Gets caption data
+@api.route('/caption_data/<string:proj_id>')
+class GetSRT(Resource):
+    def get(self, proj_id):
+        file_loc, _text = uploader.get_srt(proj_id)
+        return file_loc
 
 

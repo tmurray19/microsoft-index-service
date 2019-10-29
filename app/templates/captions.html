@@ -2,24 +2,26 @@
 
 {% block content %}
     <div class="container-fluid">
-      <div id="vid_player" class="col-lg-6 float-left embed-responsive embed-responsive-16by9">{{player | safe}}</div>
+      <div id="vid_player" class="col-lg-6 float-left embed-responsive embed-responsive-16by9">{{player | safe}}</div>    
+      {#<!--<div id="cc_editor_2" class="col-lg-6 float-right"><textarea id="srt_edit" class="form-control w-100 h-100">{{ srt | safe }}</textarea></div>-->#}
       <div id="cc_editor" class="col-lg-6 float-right embed-responsive embed-responsive-16by9">{{captions | safe}}</div>
     </div>
     <div class="container-fluid">  
       <div>I'll put video data in here later like title and stuff</div>
       <div>Click 'Reload' to view changes to caption</div>
-      <button class='btn' id="next">Reload</button>
+      <button class='btn' id="reload">Reload</button>
+      <a class="btn" href="{{ url_for('download_captions', proj_id=proj_id) }}">Download captions</a>
     </div>
-    <div id="cc_editor_2" class="col-lg-6 float-right"><textarea id="srt_edit">{{ srt | safe }}</textarea></div>
 
-<script>
-    $(document).ready( function() {
-        $('#next').click(function() {
-           $.ajax("{{ url_for('show_player', proj_id=proj_id) }}").done(function (reply) {
-              $('#vid_player').html(reply);
-           });
-        });
-    });
-</script>
+    <script>
+      $(document).ready( function() {
+          $('#reload').click(function() {
+             $.ajax("{{ url_for('show_player', proj_id=proj_id) }}").done(function (reply) {
+                $('#vid_player').html(reply);
+             });
+          });
+      });
+  </script>
+
 
 {% endblock %}
