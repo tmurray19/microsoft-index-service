@@ -39,4 +39,3 @@ def get_access_token(index_video_id):
         logging.error("Error occured during access token of {}".format(index_video_id))
         logging.exception("")
         return None
-#get_access_token("cf40989adb")

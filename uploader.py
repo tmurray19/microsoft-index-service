@@ -154,7 +154,7 @@ def upload_project_to_index(proj_id=None, send_end=None):
             if send_end is not None:
                 send_end.send(success)
             return success
-
+    
 
 def get_insights(proj_id):
     """
@@ -292,10 +292,6 @@ def get_srt(proj_id):
     
     print(srt.text)
     return to_file, srt.text
-get_srt('2312')
-
-
-
 
 
 def api_query_widget(video_id, access_token):    
@@ -353,3 +349,77 @@ def create_queue_instance(proj_id):
         logging.error("Error occured during upload initialisation")
         logging.exception("")
         return -1
+
+
+def update_captions(proj_id, caption_data):
+    """
+    Queries the server to return the srt file
+    """
+    logging.debug("Querying index service for SRT for {}".format(proj_id))
+    # Get access token
+    logging.debug("Get index ID")
+    video_id = None
+    # Gets video id if the clip already exists
+    try:        
+        # Get location of project
+        proj_loc = os.path.join(Config.BASE_DIR, Config.VIDS_LOCATION, proj_id)
+
+        logging.debug("Querying CC status of {}".format(proj_id))
+        print("Querying CC status of {}".format(proj_id))
+
+        # Opens JSON data, prints last known status to logging file
+        with open(os.path.join(proj_loc, proj_id+"_index_status.json")) as status_json_file:
+            # Last known json data 
+            json_data = json.load(status_json_file)
+            
+            # Now, you need to query this video id
+            video_id = json_data['index_video_id']
+    except:
+        logging.error("Error occured during get_widget for '{}'".format(proj_id))
+        logging.error("File may not exist on index server")
+        logging.exception('')
+        return -1
+
+    # Gets a new access token for the video
+    access_token = get_access_token(video_id)
+
+    logging.debug("Access token recieved for '{}'".format(proj_id))
+    logging.debug(access_token)
+
+    # Writes it to the
+    json_data['accessToken'] = access_token
+
+    logging.debug("Writing access token to json")
+
+    with open(os.path.join(proj_loc, proj_id+"_index_status.json"), 'w') as status_json_file:
+        json.dump(json_data, status_json_file)
+    
+    headers = {
+        'Ocp-Apim-Subscription-Key': Config.INDEX_SUBSCRIPTION_KEY,
+        'Content-Type': 'text/vtt'
+    }
+
+    params = {
+        'accessToken': access_token,    
+        'language': 'en-US',
+        'setAsSourceLanguage': 'False',
+        'sendSuccessEmail': 'False',
+        'body': caption_data
+    }
+
+    srt_status = requests.get(
+        'https://api.videoindexer.ai/{loc}/Accounts/{accId}/Videos/{vidId}/Index/Transcript'.format(
+            loc=Config.INDEX_ACCOUNT_LOCATION,
+            accId=Config.INDEX_ACCOUNT_ID,
+            vidId=video_id
+        ),
+        params=params,
+        headers=headers, 
+    )    
+    
+    print(srt_status.status_code)
+
+    print(srt_status.text)
+
+    logging.debug("Updated captions")
+    print("Updated Captions")
