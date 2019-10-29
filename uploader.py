@@ -218,7 +218,8 @@ def get_insights(proj_id):
 
     print(cc_widget)
     print(vid_widget)
-    return cc_widget, vid_widget
+    _file_loc, caption_data = get_srt(proj_id)
+    return cc_widget, vid_widget, caption_data
 
 
 def get_srt(proj_id):
@@ -263,7 +264,7 @@ def get_srt(proj_id):
     with open(os.path.join(proj_loc, proj_id+"_index_status.json"), 'w') as status_json_file:
         json.dump(json_data, status_json_file)
     
-    logging.debug("We are now querying for the widgets")
+    logging.debug("We are now querying for the srt file")
 
     headers = {
         'Ocp-Apim-Subscription-Key': Config.INDEX_SUBSCRIPTION_KEY,
@@ -284,8 +285,14 @@ def get_srt(proj_id):
         headers=headers
     )
 
-    return srt
-
+    to_file = os.path.join(os.path.abspath('app/static/srt/'), proj_id + "_cc.srt")
+    print(to_file)
+    with open(to_file, 'w') as outfile:
+        outfile.write(srt.text)
+    
+    print(srt.text)
+    return to_file, srt.text
+get_srt('2312')
 
 
 

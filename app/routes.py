@@ -1,4 +1,4 @@
-from flask import render_template, request, Blueprint, url_for, jsonify
+from flask import render_template, request, Blueprint, url_for, jsonify, send_file, send_from_directory
 from flask_restplus import Api, Resource
 from app import app
 import logging, os
@@ -13,10 +13,11 @@ def show_index(proj_id):
     proj_id = str(proj_id)
 
     try:
-        caption, vid = uploader.get_insights(proj_id)
-        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
+        caption, vid, srt = uploader.get_insights(proj_id)
+        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption, srt=srt)
     except:
         return render_template('error.html')
+        
 @app.route('/player/<string:proj_id>')
 def show_player(proj_id):
     """
@@ -26,6 +27,10 @@ def show_player(proj_id):
     _caption, vid = uploader.get_insights(proj_id)
     return vid
 
+@app.route('/download/captions/<string:proj_id>')
+def download_captions(proj_id):
+    captions = uploader.get_srt(proj_id)
+    return send_file(captions)
 
 api = Api(app)
 

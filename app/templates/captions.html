@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="container-fluid">
+      <div id="vid_player" class="col-lg-6 float-left embed-responsive embed-responsive-16by9">{{player | safe}}</div>
+      <div id="cc_editor" class="col-lg-6 float-right embed-responsive embed-responsive-16by9">{{captions | safe}}</div>
+    </div>
+    <div class="container-fluid">  
+      <div>I'll put video data in here later like title and stuff</div>
+      <div>Click 'Reload' to view changes to caption</div>
+      <button class='btn' id="next">Reload</button>
+    </div>
+    <div id="cc_editor_2" class="col-lg-6 float-right"><textarea id="srt_edit">{{ srt | safe }}</textarea></div>
 
-    <div id="vid_player" class="float-left">{{player | safe}}</div>
-    <div id="cc_editor" class="float-right">{{captions | safe}}</div>
-    <div class="float-right">I'll put video data in here later like title and stuff</div>
-    <input type="button" id="next" value="Reload" />
-    
 <script>
     $(document).ready( function() {
         $('#next').click(function() {
