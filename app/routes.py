@@ -29,7 +29,7 @@ def show_player(proj_id):
     _caption, vid, _srt = uploader.get_insights(proj_id)
     return vid
 
-@app.route('/download/captions/<string:proj_id>')
+@app.route('/download/captions/<string:proj_id>.srt')
 def download_captions(proj_id):
     # This gets captions from indexer
     captions, _text = uploader.get_srt(proj_id)
