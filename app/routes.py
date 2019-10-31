@@ -1,7 +1,7 @@
 from flask import render_template, request, Blueprint, url_for, jsonify, send_file, send_from_directory
 from flask_restplus import Api, Resource
 from app import app
-import logging, os
+import logging, os, json
 import uploader
 
 
@@ -14,7 +14,8 @@ def show_index(proj_id):
 
     try:
         caption, vid, _srt = uploader.get_insights(proj_id)
-        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption)
+        vid_name = get_name(proj_id)
+        return render_template('captions.html', proj_id=proj_id, player=vid, captions=caption, vid_name=vid_name)
     except:
         logging.exception('')
         return render_template('error.html')
@@ -67,3 +68,11 @@ class GetSRT(Resource):
         return file_loc
 
 
+def get_name(proj_id):
+    base_dir = os.path.join(app.config['BASE_DIR'], app.config['VIDS_LOCATION'], str(proj_id))
+    file_location = os.path.join(base_dir, 'FinalSubclipJson.json')
+
+    json_data = json.load(open(file_location, 'r'))
+
+    return json_data['Name']
+    

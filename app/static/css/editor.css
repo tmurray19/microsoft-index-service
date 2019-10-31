@@ -1,4 +1,4 @@
-#container {
+.container-old {
     width: 100%;
     margin: 0 auto;
     max-width: 700px;
@@ -9,6 +9,17 @@
     top: 0;
   }
 
-.float-item{
-    float: left;
+.sherpa-btn {
+  background-color: #e81a48;
+  border: 1px solid #e81a48;
+  color: #fff;
+  margin: 0 0 0 20px;
 }
+
+.sherpa-btn:hover {
+  background-color: #0b244c;
+  border: 1px solid #0b244c;
+  color: #fff;
+}
+
+    
