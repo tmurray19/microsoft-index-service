@@ -23,16 +23,15 @@ class Config(object):
     # Defining storage name and key
     STORAGE_ACCOUNT_NAME = os.environ.get('STORAGE_ACCOUNT_NAME') or 'csae48d5df47deax41bcxbaa'
     STORAGE_ACCOUNT_KEY = os.environ.get('STORAGE_ACCOUNT_KEY') or \
-        'iUTL5cLSDTObfUliySlqjT4x1dfCQ1U7l7zuaZrPEwhGIHnHPKWfYuFrq16cCjFUS/122mcwJpdseC9JI6mSGA=='
+        ''
     # TODO: When deploying, remove 'testingazure' for the commented out Share Name
-    SHARE_NAME = os.environ.get('SHARE_NAME') or 'cs-william-squarev-media-10037ffe909d3982' #'testingazure'  # 
     # Defining name of json file containing edits
     PROJECT_NAME = os.environ.get('PROJECT_NAME') or 'FinalSubclipJson.json'
     PREVIEW_CHUNK_LENGTH = os.environ.get('PREVIEW_CHUNK_LENGTH') or 10
 
     # Video Indexer details
-    INDEX_ACCOUNT_ID = 'd1c32f1b-2a26-4b44-b6a3-c96e709d0648'
-    INDEX_SUBSCRIPTION_KEY = '6b25b9e862fa4af4bab763ceaaf223cd'
+    INDEX_ACCOUNT_ID = ''
+    INDEX_SUBSCRIPTION_KEY = ''
     # TODO: CHANGE THIS FROM 'trial'
     INDEX_ACCOUNT_LOCATION = 'trial'
     
