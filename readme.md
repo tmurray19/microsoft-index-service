@@ -1,5 +1,5 @@
 
-# Video Sherpa Closed Caption service
+# Closed Caption service
 
 ## Initial outline
 
